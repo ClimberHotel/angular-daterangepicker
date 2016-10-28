@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <!-- bower:css -->
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="lib/bootstrap-daterangepicker/daterangepicker.css" />
+    <!-- endbower -->
+
+    <style type="text/css">
+        .row {
+            background-color: #323742;
+            color: #19c0ff;
+        }
+        .row:hover,
+        .row:hover input.form-control {
+            color: white;
+            cursor: pointer;
+        }
+        input.form-control,
+        input.form-control[readonly] {
+            background-color: transparent;
+            border: none;
+            color: #19c0ff;
+            border-radius: 0;
+        }
+        input.form-control:focus {
+            border: none;
+            box-shadow: none;
+        }
+        input.form-control.focused {
+            color: white;
+            font-weight: bold;
+        }
+
+        .row.changed > span,
+        input.changed {
+            animation: text-changed 0.4s cubic-bezier(0.65, 0.05, 0.36, 1) 1;
+        }
+
+        .daterangepicker_input {
+            display: none;
+        }
+
+        @keyframes text-changed {
+            0    { color: white; }
+            50%  { background-color: #19c0ff; color: white; }
+            100% { background-color: transparent; color: inherit; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- bower:js -->
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-messages/angular-messages.js"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="lib/moment/moment.js"></script>
+    <script src="lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- endbower -->
+
+    <script src="js/angular-daterangepicker.js"></script>
+
+    <div class="container" ng-controller="TestCtrl">
+        <h1>Climber Hotel's date range picker for Angular</h1>
+
+        <div class="row" style="position: relative; background-color: #323742;">
+            <input  id="dateRangePicker_elem"
+                    style="position: absolute; height: 100%; width: 100%; opacity: 0; pointer-events: none;"
+                    date-range-picker
+                    options="dateRangePicker.options"
+                    ng-model="dateRangePicker.dates" />
+            <input  id="dateRangePicker_from"
+                    class="form-control date-picker"
+                    style="float: left; width: calc(50% - 16px); text-align: center;"
+                    ng-value="dateRangePicker.dates.startDate.toDate() | date:'mediumDate'"
+                    readonly />
+            <span   class="glyphicon glyphicon-arrow-right"
+                    style="float: left; width: 32px; line-height: 34px; text-align: center; top: 0px;"></span>
+            <input  id="dateRangePicker_to"
+                    class="form-control date-picker"
+                    style="float: left; width: calc(50% - 16px); text-align: center;"
+                    ng-value="dateRangePicker.dates.endDate.toDate() | date:'mediumDate'"
+                    readonly />
+        </div>
+    </div>
+
+</body>
+
+
+<script>
+exampleApp = angular.module('example', ['daterangepicker']);
+exampleApp.controller('TestCtrl', function($scope) {
+
+    $scope.dateRangePicker = {
+        options: {
+            autoApply: true,
+            autoUpdateInput: true,
+            fromElement: "#dateRangePicker_from",
+            toElement: "#dateRangePicker_to",
+            ranges: {
+                'Today':        [moment(), moment()],
+                'Yesterday':    [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
+                'Last 7 Days':  [moment().subtract(7, 'day'), moment()],
+                'Last 30 Days': [moment().subtract(30, 'day'), moment()],
+                'This Month':   [moment().startOf('month'), moment().endOf('month')],
+                'Last Month':   [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            locale: {
+                format: 'DD, MMM YYYY'
+            },
+            showCustomRangeLabel: false,
+            alwaysShowCalendars: true,
+            opens: 'center',
+            startDate: moment().subtract(1, 'day').startOf('day'),
+            endDate: moment().startOf('day')
+        },
+        dates: {
+            startDate: moment().subtract(1, 'day').startOf('day'),
+            endDate: moment().startOf('day')
+        }
+    };
+
+    //Watch for date changes
+    $scope.$watch('dateRangePicker.dates', function(newDate) {
+        console.log('New date set: ', newDate.startDate.toDate(), newDate.endDate.toDate());
+    }, false);
+
+});
+
+angular.bootstrap(document, ['example']);</script>
+
+</html>
